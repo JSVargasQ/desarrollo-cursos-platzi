@@ -1,18 +1,17 @@
-
-const UserService = require('../services/user.service');
+const CustomerService = require('../services/customer.service');
 const express = require('express');
 const validatorHandler = require('./../middlewares/validator.handler');
-const { createUserSchema, getUserSchema, updateUserSchema } = require('./../schemas/user.schema');
+const { createCustomerSchema, getCustomerSchema, updateCustomerSchema } = require('./../schemas/customer.schema');
 
 const router = express.Router();
-const service = new UserService();
+const service = new CustomerService();
 
 router.get('/', async (req, res, next) => {
   try {
-    const users = await service.find();
+    const customers = await service.find();
     res.status(200).json({
       message: 'Consulta exitosa!',
-      data: users
+      data: customers
     });
   } catch (error) {
     next(error);
@@ -20,18 +19,18 @@ router.get('/', async (req, res, next) => {
 });
 
 /**
- * Create an user
+ * Create an customer
  */
 router.post('/',
-  validatorHandler( createUserSchema, 'body' ),
+  validatorHandler( createCustomerSchema, 'body' ),
   async (request, response, next) => {
 
     try {
       const body = request.body;
-      const newUser = await service.create(body);
+      const newCustomer = await service.create(body);
       response.status(201).json({
-        message: 'Se ha creado exitosamente el usuario!',
-        data: newUser
+        message: 'Se ha creado exitosamente el Cliente!',
+        data: newCustomer
       });
     } catch (err) {
       next(err);
@@ -41,11 +40,11 @@ router.post('/',
 );
 
 /**
- * Update a single attribute of user
+ * Update a single attribute of customer
  */
 router.patch('/:id',
-  validatorHandler( getUserSchema, 'params' ),
-  validatorHandler( updateUserSchema, 'body' ),
+  validatorHandler( getCustomerSchema, 'params' ),
+  validatorHandler( updateCustomerSchema, 'body' ),
   async (request, response, next) => {
     try {
       const { id } = request.params;
@@ -55,12 +54,12 @@ router.patch('/:id',
 
       if(status) {
         response.json({
-          message: 'Se ha actualizado el usuario exitosamente!',
+          message: 'Se ha actualizado el Cliente exitosamente!',
           data: status
         });
       } else {
         response.json({
-          message: 'No se ha podido actualizar el usuario, verifique los datos.',
+          message: 'No se ha podido actualizar el Cliente, verifique los datos.',
           data: status
         });
       }
@@ -72,21 +71,21 @@ router.patch('/:id',
 
 
 /**
- * Get user by id
+ * Get customer by id
  */
 router.get('/:id',
-  validatorHandler( getUserSchema, 'params' ),
+  validatorHandler( getCustomerSchema, 'params' ),
   async (request, response, next) => {
     try {
       const { id } = request.params;
-      const user = await service.findOne(id);
+      const customer = await service.findOne(id);
 
-      if( !user ) {
+      if( !customer ) {
         response.status(404).json({
-          message: 'Usuario no encontrado'
+          message: 'Cliente no encontrado'
         });
       } else {
-        response.status(200).json(user);
+        response.status(200).json(customer);
       }
     } catch ( error ) {
       next( error );
@@ -95,10 +94,10 @@ router.get('/:id',
 );
 
 /**
- * Delete an user
+ * Delete an customer
  */
   router.delete('/:id',
-  validatorHandler(getUserSchema, 'params'),
+  validatorHandler(getCustomerSchema, 'params'),
   async (request, response, next) => {
     try {
       const { id } = request.params;

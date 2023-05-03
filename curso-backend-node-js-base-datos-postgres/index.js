@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const routerApi = require('./routes');
 
-const { logErrors, errorHandler, boomErrorHandler } = require('./middlewares/error.handler');
+const { logErrors, errorHandler, boomErrorHandler, ormErrorHandler } = require('./middlewares/error.handler');
 
 const app = express();
 const port = 3000;
@@ -27,10 +27,6 @@ app.get('/', (request, response) => {
     response.send('¡Hello server!');
 });
 
-app.get('/nueva-ruta', (request, response) => {
-  response.send('¡Hola soy un nuevo EndPoint!');
-});
-
 app.get('/categories/:categoryId/products/:productId', (request, response) => {
   const { categoryId, productId } = request.params;
   response.json({
@@ -43,6 +39,7 @@ routerApi(app);
 
 app.use( logErrors );
 app.use( boomErrorHandler );
+app.use( ormErrorHandler );
 app.use( errorHandler );
 
 app.listen(port, () => {
